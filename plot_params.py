@@ -28,21 +28,15 @@ def plot_parameter(data_file, param_key, injected_val=None):
     print(f"Plot saved as {param_key}_distribution.png")
     plt.close()
 
-def main():
-    # Set up argument parsing
-    parser = argparse.ArgumentParser(description="Plot parameter distribution from a JSON file.")
+# Set up argument parsing
+parser = argparse.ArgumentParser(description="Plot parameter distribution from a JSON file.")
     
-    # Add arguments
-    parser.add_argument('input', type=str, help="Path to the JSON file.")
-    parser.add_argument('param', type=str, help="Parameter key to extract from JSON.")
-    parser.add_argument('--injected', type=float, default=None, help="Optional injected value to highlight.")
+# Add arguments
+parser.add_argument('--input', type=str, help="Path to the JSON file.")
+parser.add_argument('--param', type=str, help="Parameter key to extract from JSON.")
+parser.add_argument('--injected', type=float, default=None, help="Optional injected value to highlight.")
+# Parse the arguments
+args = parser.parse_args()
+# Call the plotting function with parsed arguments
+plot_parameter(args.input, args.param, args.injected)
 
-    # Parse the arguments
-    args = parser.parse_args()
-
-    # Call the plotting function with parsed arguments
-    plot_parameter(args.input, args.param, args.injected)
-
-# Run the main function when the script is executed
-if __name__ == "__main__":
-    main()
