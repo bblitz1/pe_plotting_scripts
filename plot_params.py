@@ -2,7 +2,7 @@ import argparse
 import json
 import matplotlib.pyplot as plt
 
-def plot_parameter(data_file, param_key, injected_val=None):
+def plot_parameter(data_file, param_key, injected_val=None, sim_number=None):
     # Load data from JSON file
     with open(data_file, 'r') as f:
         data = json.load(f)
@@ -17,26 +17,28 @@ def plot_parameter(data_file, param_key, injected_val=None):
     if injected_val is not None:
         plt.axvline(injected_val, color='red', linestyle='--', label=f'Injected Value: {injected_val}')
 
-    # Labeling the plot
+    #Label
     plt.xlabel(param_key)
     plt.ylabel('Frequency')
-    plt.title(f'{param_key.capitalize()} Distribution')
+    plt.title(f'{param_key.capitalize()} Distribution - Simulation {sim_number}')
     plt.legend()
 
-    # Save the plot to a file
-    plt.savefig(f"{param_key}_distribution.png")
-    print(f"Plot saved as {param_key}_distribution.png")
+    filename = f"{param_key}_distribution_sim{sim_number}.png"
+    plt.savefig(filename)
+    print(f"Plot saved as {filename}")
     plt.close()
 
-# Set up argument parsing
-parser = argparse.ArgumentParser(description="Plot parameter distribution from a JSON file.")
-    
-# Add arguments
-parser.add_argument('--input', type=str, help="Path to the JSON file.")
+parser = argparse.ArgumentParser(description="Plot parameter distribution from multiple JSON files.")
+
+parser.add_argument('--num_sims', type=int, choices=[10, 30, 50, 100], help="Number of simulations to run.")
 parser.add_argument('--param', type=str, help="Parameter key to extract from JSON.")
 parser.add_argument('--injected', type=float, default=None, help="Optional injected value to highlight.")
-# Parse the arguments
 args = parser.parse_args()
-# Call the plotting function with parsed arguments
-plot_parameter(args.input, args.param, args.injected)
 
+
+for i in range(1, args.num_sims + 1):
+    json_file = f"simulation_{i}.json"  
+    try:
+        plot_parameter(json_file, args.param, args.injected, sim_number=i)
+    except FileNotFoundError:
+        print(f"Warning: {json_file} not found, skipping.")
